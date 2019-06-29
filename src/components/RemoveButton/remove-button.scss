@@ -1,0 +1,17 @@
+.remove__button {
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #6B808C;
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  &:hover{
+    background-color: #979797;
+  }
+  &__loader {
+    position: absolute;
+    top: 8px;
+    right: 6px;
+  }
+}

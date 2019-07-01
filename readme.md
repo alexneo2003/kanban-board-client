@@ -1,7 +1,7 @@
 # Kanban Board (client)
 
 This project is client side for "Kanban Board".  
-Production version you can check at [kanban-now.sh](https://kanban-now.sh) site.  
+Production version you can check at [kanban.now.sh](https://kanban.now.sh) site.  
 For demo access use email: demo@gmail.com, password: demodemo
 
 Server side project you can check at [this repository](https://github.com/alexneo2003/kanban-board-server).

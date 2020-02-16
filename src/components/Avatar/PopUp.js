@@ -6,19 +6,16 @@ import { ME_QUERY } from "../../helpers/queries";
 import "./popup.scss";
 
 export default withRouter(({ history }) => {
-  const onHandleClick = (client, logout) => {
+  const onHandleClick = (logout) => {
     logout();
-    client.clearStore().then(() => {
-      client.resetStore();
-      history.push("/");
-    });
+    history.push("/");
   };
   return (
     <Mutation mutation={LOGOUT_MUTATION} refetchQueries={[{ query: ME_QUERY }]}>
       {(logout, { client }) => (
         <div className="avatar__popup">
           <ul>
-            <li onClick={() => onHandleClick(client, logout)}>Logout</li>
+            <li onClick={() => onHandleClick(logout)}>Logout</li>
           </ul>
         </div>
       )}

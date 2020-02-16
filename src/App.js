@@ -23,7 +23,7 @@ import "flexboxgrid2/flexboxgrid2.css";
 const client = new ApolloClient({
   uri:
     process.env.NODE_ENV === "development"
-      ? "http://localhost:4000"
+      ? "http://localhost:4000/graphql"
       : "https://kanban-server.now.sh",
   credentials: "include"
 });

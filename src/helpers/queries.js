@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "apollo-boost";
 
 export const COLUMNS_QUERY = gql`
   query Columns($boardID: String!) {

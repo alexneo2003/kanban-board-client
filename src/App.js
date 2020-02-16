@@ -24,7 +24,7 @@ const client = new ApolloClient({
   uri:
     process.env.NODE_ENV === "development"
       ? "http://localhost:4000/graphql"
-      : "https://kanban-server.now.sh",
+      : "https://kanban-server.now.sh/graphql",
   credentials: "include"
 });
 

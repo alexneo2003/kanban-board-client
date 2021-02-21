@@ -1,40 +1,25 @@
-import React, { useContext } from "react";
-import { Mutation } from "react-apollo";
-import { Draggable } from "react-beautiful-dnd";
-import { REMOVE_CARD_MUTATION } from "../../helpers/mutations";
-import { COLUMNS_QUERY } from "../../helpers/queries";
-import Context from "../../context";
-import RemoveButton from "../RemoveButton";
+/* eslint-disable react/jsx-props-no-spreading */
+import React from 'react';
+import { Draggable } from 'react-beautiful-dnd';
+import RemoveButton from '../RemoveButton';
 
-import "./card.scss";
+import './card.scss';
 
-export default ({ columnID, cardID, title, index }) => {
-  const { onRemoveCard, currentBoard } = useContext(Context);
+const Card = ({ columnID, cardID, title, index }) => {
   return (
-    <Mutation
-      mutation={REMOVE_CARD_MUTATION}
-      refetchQueries={[
-        { query: COLUMNS_QUERY, variables: { boardID: currentBoard.id } }
-      ]}
-    >
-      {(removeCard, { loading, error }) => (
-        <Draggable draggableId={cardID} index={index}>
-          {({ draggableProps, dragHandleProps, innerRef }, { isDragging }) => (
-            <div
-              className={isDragging ? "card card__dragging" : "card"}
-              {...draggableProps}
-              {...dragHandleProps}
-              ref={innerRef}
-            >
-              <span className="card__text">{title}</span>
-              <RemoveButton
-                loading={loading}
-                onClick={() => onRemoveCard(columnID, cardID, removeCard)}
-              />
-            </div>
-          )}
-        </Draggable>
+    <Draggable draggableId={cardID} index={index}>
+      {({ draggableProps, dragHandleProps, innerRef }, { isDragging }) => (
+        <div
+          className={isDragging ? 'card card__dragging' : 'card'}
+          {...draggableProps}
+          {...dragHandleProps}
+          ref={innerRef}>
+          <span className="card__text">{title}</span>
+          <RemoveButton columnID={columnID} cardID={cardID} buttonType="card" />
+        </div>
       )}
-    </Mutation>
+    </Draggable>
   );
 };
+
+export default Card;

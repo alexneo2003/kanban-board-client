@@ -1,8 +1,10 @@
-import React from "react";
-import "./mini-loader.scss";
+import React from 'react';
+import './mini-loader.scss';
 
-export default () => (
+const Loader = () => (
   <div className="cssload-container__mini">
     <div className="cssload-speeding-wheel__mini" />
   </div>
 );
+
+export default Loader;

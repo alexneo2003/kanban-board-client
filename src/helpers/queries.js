@@ -1,18 +1,26 @@
-import { gql } from "apollo-boost";
+import { gql } from '@apollo/client';
 
 export const COLUMNS_QUERY = gql`
   query Columns($boardID: String!) {
-    columns(boardID: $boardID) {
-      id
-      title
-      cards {
+    getColumns(boardID: $boardID) {
+      success
+      message
+      columns {
+        id
+        title
+        cards {
+          id
+          title
+        }
+      }
+    }
+    getBoardById(id: $boardID) {
+      success
+      message
+      board {
         id
         title
       }
-    }
-    boardById(id: $boardID) {
-      id
-      title
     }
   }
 `;
@@ -20,18 +28,26 @@ export const COLUMNS_QUERY = gql`
 export const ME_QUERY = gql`
   query Me {
     me {
-      name
-      email
-      id
+      success
+      message
+      user {
+        name
+        email
+        id
+      }
     }
   }
 `;
 
 export const BOARDS_QUERY = gql`
   query Boards {
-    boards {
-      id
-      title
+    getBoards {
+      success
+      message
+      boards {
+        id
+        title
+      }
     }
   }
 `;

@@ -1,4 +1,6 @@
 .avatar__wrapper {
+  border: none;
+  cursor: pointer;
   position: absolute;
   top: 0;
   right: 0;
@@ -16,5 +18,5 @@
   background-position: 50% 50%;
   background-size: cover;
   cursor: pointer;
-  margin: 4px;
+  margin-top: 12px;
 }

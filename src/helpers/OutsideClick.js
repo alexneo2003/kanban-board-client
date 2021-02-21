@@ -1,23 +1,24 @@
-import React, { useEffect, useRef, useContext } from "react";
-import Context from "../context";
+import React, { useEffect, useRef, useContext } from 'react';
+import Context from '../context';
 
-export default ({ children }) => {
+const OutsideClick = ({ children }) => {
   const wrapperRef = useRef(null);
   const { isOutsideClicked, setOutsideClicked } = useContext(Context);
 
-  const handleClickOutside = event => {
+  const handleClickOutside = (event) => {
     if (wrapperRef && !wrapperRef.current.contains(event.target)) {
-      console.log("isOutsideClicked");
       setOutsideClicked(true);
     }
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
   return <div ref={wrapperRef}>{children}</div>;
 };
+
+export default OutsideClick;

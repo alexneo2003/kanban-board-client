@@ -9,6 +9,7 @@
   cursor: pointer;
   border-radius: 3px;
   transition: 200ms;
+  border: none;
   &_text {
     margin-left: 8px;
     font-size: 13px;
@@ -34,6 +35,7 @@
       transition: 0.2s;
       &:hover{
         color: #717171;
+        cursor: pointer;
       }
     }
   }

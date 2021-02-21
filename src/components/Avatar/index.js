@@ -1,21 +1,22 @@
-import React, { useState } from "react";
-import avatarsList from "./avatars.json";
-import { ReactComponent as AvatarImg } from "../../images/avatars/001-man-13.svg";
-import PopUp from "./PopUp";
+import React, { useState } from 'react';
+// import avatarsList from './avatars.json';
+import { ReactComponent as AvatarImg } from '../../images/avatars/001-man-13.svg';
+import PopUp from './PopUp';
 
-import "./avatar.scss";
+import './avatar.scss';
 
-export default () => {
+const Avatar = () => {
   const [isPopUpShow, togglePopup] = useState(false);
   return (
     <>
-      <div
+      <button
         className="avatar__wrapper"
-        onClick={() => togglePopup(!isPopUpShow)}
-      >
+        onClick={() => togglePopup(!isPopUpShow)}>
         <AvatarImg className="avatar" />
-      </div>
+      </button>
       {isPopUpShow && <PopUp />}
     </>
   );
 };
+
+export default Avatar;

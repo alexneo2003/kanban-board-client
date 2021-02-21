@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
-import { ReactComponent as Logo } from "../../images/kanban_logo.svg";
-import { Link } from "react-router-dom";
-import Context from "../../context";
-import Avatar from "../Avatar";
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { ReactComponent as Logo } from '../../images/kanban_logo.svg';
+import Context from '../../context';
+import Avatar from '../Avatar';
 
-import "./header.scss";
+import './header.scss';
 
-export default () => {
+const Header = () => {
   const { owner, currentBoard, setCurrentBoard } = useContext(Context);
 
   return (
@@ -15,8 +15,7 @@ export default () => {
         <Link
           to="/"
           className="header__wrapper"
-          onClick={() => setCurrentBoard("")}
-        >
+          onClick={() => setCurrentBoard('')}>
           <Logo className="header__logo" />
           <span className="header__owner">{owner}</span>
         </Link>
@@ -28,3 +27,4 @@ export default () => {
     </header>
   );
 };
+export default Header;

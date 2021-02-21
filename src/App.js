@@ -1,64 +1,62 @@
-import React, { useState, useEffect, useReducer } from "react";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
-import { Query } from "react-apollo";
+import React, { useState, useEffect, useReducer } from 'react';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
-} from "react-router-dom";
-import { ME_QUERY } from "./helpers/queries";
-import LoginScreen from "./components/LoginScreen";
-import Board from "./components/Board";
-import Context from "./context";
-import MainScreen from "./components/MainScreen";
-import Layout from "./components/Layout";
-import BigLoader from "./components/Loader/BigLoader";
-import reducer from "./reducer";
+  Redirect,
+} from 'react-router-dom';
+import { BOARDS_QUERY, COLUMNS_QUERY } from './helpers/queries';
+import Board from './components/Board';
+import Context from './context';
+import MainScreen from './components/MainScreen';
+import reducer from './reducer';
 
-import "./styles.scss";
-import "flexboxgrid2/flexboxgrid2.css";
+import './styles.scss';
+import 'flexboxgrid2/flexboxgrid2.css';
 
 const client = new ApolloClient({
   uri:
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:4000/graphql"
-      : "https://kanban-server.now.sh/graphql",
-  credentials: "include"
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:4000/graphql'
+      : 'https://kanban-server.vercel.app/graphql',
+  credentials: 'include',
+  cache: new InMemoryCache(),
 });
 
 const App = () => {
-  const uniqID = () => {
-    return Math.round(Math.random() * 10000000);
-  };
-
-  const [newCardText, setNewCardText] = useState("");
+  const uniqID = () => Math.round(Math.random() * 10000000);
+  const [owner, setOwner] = useState(undefined);
+  const [newCardText, setNewCardText] = useState('');
   const [data, setData] = useState({});
-
-  const [owner, setOwner] = useState("");
   const [currentBoard, setCurrentBoard] = useState({});
-
   const [state, dispatch] = useReducer(reducer, null);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       window.location.reload();
-    };
-  }, []);
+    },
+    []
+  );
 
-  const addNewBoard = (e, addBoard) => {
+  const addNewBoard = (e, addBoard, isBoardForm) => {
     e.preventDefault();
     addBoard({
-      variables: { title: newCardText }
+      variables: { title: newCardText },
+      refetchQueries: [
+        {
+          query: isBoardForm ? BOARDS_QUERY : COLUMNS_QUERY,
+          variables: { boardID: currentBoard.id },
+        },
+      ],
     });
-    setNewCardText("");
+    setNewCardText('');
   };
 
-  const addNewCard = (e, columnID, addCard) => {
+  const addNewCard = (e, columnID, addCard, isBoardForm) => {
     e.preventDefault();
     const newData = {
-      columns: data.columns.map(col => {
+      columns: data.columns.map((col) => {
         if (col.id === columnID) {
           return {
             ...col,
@@ -66,64 +64,84 @@ const App = () => {
               ...col.cards,
               {
                 title: newCardText,
-                id: uniqID()
-              }
-            ]
+                id: uniqID(),
+              },
+            ],
           };
         }
         return col;
-      })
+      }),
     };
     setData(newData);
 
     addCard({
       variables: {
         boardID: currentBoard.id,
-        columnID: columnID,
-        cardInput: { title: newCardText }
-      }
+        columnID,
+        cardInput: { title: newCardText },
+      },
+      refetchQueries: [
+        {
+          query: isBoardForm ? BOARDS_QUERY : COLUMNS_QUERY,
+          variables: { boardID: currentBoard.id },
+        },
+      ],
     });
-    setNewCardText("");
+    setNewCardText('');
   };
 
-  const addNewColumn = (e, addColumn) => {
+  const addNewColumn = (e, addColumn, isBoardForm) => {
     e.preventDefault();
     const newData = {
       columns: data.columns
         ? [...data.columns, { title: newCardText, id: uniqID(), cards: [] }]
-        : [{ title: newCardText, id: uniqID(), cards: [] }]
+        : [{ title: newCardText, id: uniqID(), cards: [] }],
     };
     setData(newData);
-    addColumn({ variables: { boardID: currentBoard.id, title: newCardText } });
-    setNewCardText("");
+    addColumn({
+      variables: { boardID: currentBoard.id, title: newCardText },
+      refetchQueries: [
+        {
+          query: isBoardForm ? BOARDS_QUERY : COLUMNS_QUERY,
+          variables: { boardID: currentBoard.id },
+        },
+      ],
+    });
+    setNewCardText('');
   };
 
   const onRemoveCard = (columnID, cardID, removeCard) => {
-    if (global.confirm("Are you sure you want to remove the card")) {
+    if (global.confirm('Are you sure you want to remove the card')) {
       setData({
-        columns: data.columns.map(column => {
+        columns: data.columns.map((column) => {
           if (column.id === columnID) {
             return {
               ...column,
-              cards: column.cards.filter(card => card.id !== cardID)
+              cards: column.cards.filter((card) => card.id !== cardID),
             };
           }
           return column;
-        })
+        }),
       });
-      removeCard({ variables: { columnId: columnID, cardId: cardID } });
+      removeCard({
+        variables: { columnId: columnID, cardId: cardID },
+        refetchQueries: [
+          { query: COLUMNS_QUERY, variables: { boardID: currentBoard.id } },
+        ],
+      });
     }
   };
 
   const onRemoveColumn = (columnID, removeColumn) => {
-    if (global.confirm("Are you sure you want to remove the column")) {
+    if (global.confirm('Are you sure you want to remove the column')) {
       setData({
-        columns: data.columns.filter(column => {
-          return column.id !== columnID;
-        })
+        columns: data.columns.filter((column) => column.id !== columnID),
       });
       removeColumn({
-        variables: { boardID: currentBoard.id, columnID: columnID }
+        variables: { boardID: currentBoard.id, columnID },
+        refetchQueries: [
+          { query: COLUMNS_QUERY, variables: { boardID: currentBoard.id } },
+        ],
       });
     }
   };
@@ -146,32 +164,15 @@ const App = () => {
           owner,
           setOwner,
           currentBoard,
-          setCurrentBoard
-        }}
-      >
-        <Query query={ME_QUERY} notifyonnetworkstatuschange={false}>
-          {({ data, loading, error, networkStatus }) => {
-            if (networkStatus === 1) return <div />;
-            if (loading) return <BigLoader />;
-            if (error) return <div>Error :(</div>;
-            if (data.me === null) {
-              return <LoginScreen />;
-            } else {
-              setOwner(data.me.name);
-            }
-            return (
-              <Router>
-                <Layout>
-                  <Switch>
-                    <Route exact path="/" component={MainScreen} />
-                    <Route path="/board/:id" component={Board} />
-                    <Redirect to="/" />
-                  </Switch>
-                </Layout>
-              </Router>
-            );
-          }}
-        </Query>
+          setCurrentBoard,
+        }}>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={MainScreen} />
+            <Route path="/board/:id" component={Board} />
+            <Redirect to="/" />
+          </Switch>
+        </Router>
       </Context.Provider>
     </ApolloProvider>
   );

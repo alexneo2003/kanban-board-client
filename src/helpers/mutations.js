@@ -1,8 +1,11 @@
-import gql from "graphql-tag";
+import { gql } from '@apollo/client';
 
 export const ADD_COLUMN_MUTATION = gql`
   mutation AddColumn($boardID: String!, $title: String!) {
-    addColumn(boardID: $boardID, title: $title)
+    addColumn(boardID: $boardID, title: $title) {
+      success
+      message
+    }
   }
 `;
 
@@ -12,40 +15,59 @@ export const ADD_CARD_MUTATION = gql`
     $columnID: String!
     $cardInput: CardInput!
   ) {
-    addCard(boardID: $boardID, columnID: $columnID, cardInput: $cardInput)
+    addCard(boardID: $boardID, columnID: $columnID, cardInput: $cardInput) {
+      success
+      message
+    }
   }
 `;
 
 export const ADD_BOARD_MUTATION = gql`
   mutation AddBoard($title: String!) {
-    addBoard(title: $title)
+    addBoard(title: $title) {
+      success
+      message
+    }
   }
 `;
 
 export const REMOVE_BOARD_MUTATION = gql`
   mutation RemoveBoard($boardID: String!) {
-    removeBoard(boardID: $boardID)
+    removeBoard(boardID: $boardID) {
+      success
+      message
+    }
   }
 `;
 
 export const REMOVE_COLUMN_MUTATION = gql`
   mutation RemoveColumn($boardID: String!, $columnID: String!) {
-    removeColumn(boardID: $boardID, columnID: $columnID)
+    removeColumn(boardID: $boardID, columnID: $columnID) {
+      success
+      message
+    }
   }
 `;
 
 export const REMOVE_CARD_MUTATION = gql`
   mutation RemoveCard($columnId: String!, $cardId: String!) {
-    removeCard(columnId: $columnId, cardId: $cardId)
+    removeCard(columnId: $columnId, cardId: $cardId) {
+      success
+      message
+    }
   }
 `;
 
 export const SIGNUP_MUTATION = gql`
   mutation Signup($name: String!, $email: String!, $password: String!) {
     signup(name: $name, email: $email, password: $password) {
-      name
-      email
-      id
+      success
+      message
+      user {
+        name
+        email
+        id
+      }
     }
   }
 `;
@@ -53,9 +75,13 @@ export const SIGNUP_MUTATION = gql`
 export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      name
-      email
-      id
+      success
+      message
+      user {
+        name
+        email
+        id
+      }
     }
   }
 `;
@@ -78,7 +104,10 @@ export const REORDER_COLUMN_MUTATION = gql`
       columnID: $columnID
       source: $source
       destination: $destination
-    )
+    ) {
+      success
+      message
+    }
   }
 `;
 
@@ -96,6 +125,9 @@ export const REORDER_CARD_MUTATION = gql`
       destinationColumnID: $destinationColumnID
       sourcePosition: $sourcePosition
       destinationPosition: $destinationPosition
-    )
+    ) {
+      success
+      message
+    }
   }
 `;

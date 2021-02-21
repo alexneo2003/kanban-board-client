@@ -1,81 +1,68 @@
-import React, { useContext } from "react";
-import { Mutation } from "react-apollo";
-import { Droppable, Draggable } from "react-beautiful-dnd";
-import { REMOVE_COLUMN_MUTATION } from "../../helpers/mutations";
-import { COLUMNS_QUERY } from "../../helpers/queries";
-import Context from "../../context";
-import RemoveButton from "../RemoveButton";
+/* eslint-disable react/jsx-props-no-spreading */
+import React from 'react';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
+import RemoveButton from '../RemoveButton';
 
-import Card from "../Card";
-import AddNewForm from "../AddNewForm";
-import "./column.scss";
+import Card from '../Card';
+import AddNewForm from '../AddNewForm';
+import './column.scss';
 
-export default ({ columnID, title, cards, index }) => {
-  const { onRemoveColumn, currentBoard } = useContext(Context);
-  return cards ? (
-    <Mutation
-      mutation={REMOVE_COLUMN_MUTATION}
-      refetchQueries={[
-        { query: COLUMNS_QUERY, variables: { boardID: currentBoard.id } }
-      ]}
-    >
-      {(removeColumn, { loading }) => (
-        <Draggable draggableId={columnID} index={index}>
-          {({ draggableProps, dragHandleProps, innerRef }) => (
-            <div
-              className="column"
-              {...draggableProps}
-              {...dragHandleProps}
-              ref={innerRef}
-            >
-              <div className="column__inner">
-                {title && (
-                  <div className="column__title-wraper">
-                    <div className="column__title">{title}</div>
-                    <RemoveButton
-                      loading={loading}
-                      onClick={() => onRemoveColumn(columnID, removeColumn)}
-                    />
+const Column = ({ columnID, title, cards, index }) => {
+  if (cards) {
+    return (
+      <Draggable draggableId={columnID} index={index}>
+        {({ draggableProps, dragHandleProps, innerRef }) => (
+          <div
+            className="column"
+            {...draggableProps}
+            {...dragHandleProps}
+            ref={innerRef}>
+            <div className="column__inner">
+              {title && (
+                <div className="column__title-wraper">
+                  <div className="column__title">{title}</div>
+                  <RemoveButton columnID={columnID} buttonType="column" />
+                </div>
+              )}
+              <Droppable droppableId={columnID}>
+                {(
+                  { innerRef, droppableProps, placeholder },
+                  { isDraggingOver }
+                ) => (
+                  <div
+                    className={
+                      isDraggingOver
+                        ? 'column__items column__items__dragging'
+                        : 'column__items'
+                    }
+                    ref={innerRef}
+                    {...droppableProps}>
+                    {cards.map(({ id, ...args }, index) => (
+                      <Card
+                        key={id}
+                        columnID={columnID}
+                        cardID={id}
+                        index={index}
+                        {...args}
+                      />
+                    ))}
+                    {placeholder}
                   </div>
                 )}
-                <Droppable droppableId={columnID}>
-                  {(
-                    { innerRef, droppableProps, placeholder },
-                    { isDraggingOver }
-                  ) => (
-                    <div
-                      className={
-                        isDraggingOver
-                          ? "column__items column__items__dragging"
-                          : "column__items"
-                      }
-                      ref={innerRef}
-                      {...droppableProps}
-                    >
-                      {cards.map(({ id, ...args }, index) => (
-                        <Card
-                          key={id}
-                          columnID={columnID}
-                          cardID={id}
-                          index={index}
-                          {...args}
-                        />
-                      ))}
-                      {placeholder}
-                    </div>
-                  )}
-                </Droppable>
+              </Droppable>
 
-                <AddNewForm isEmptyColumn={false} columnID={columnID} />
-              </div>
+              <AddNewForm isEmptyColumn={false} columnID={columnID} />
             </div>
-          )}
-        </Draggable>
-      )}
-    </Mutation>
-  ) : (
+          </div>
+        )}
+      </Draggable>
+    );
+  }
+  return (
     <div className="column">
-      <AddNewForm isEmptyColumn={true} columnID={columnID} />
+      <AddNewForm isEmptyColumn columnID={columnID} />
     </div>
   );
 };
+
+export default Column;

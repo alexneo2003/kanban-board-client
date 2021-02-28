@@ -21,6 +21,7 @@ const Board = ({ match }) => {
   const { state, dispatch } = useContext(Context);
 
   const [draggingResult, setDraggingResult] = useState({});
+  const [redirect, setRedirect] = useState(false);
   const { data, loading } = useQuery(COLUMNS_QUERY, {
     variables: { boardID: match.params.id },
     fetchPolicy: 'network-only',
@@ -44,10 +45,11 @@ const Board = ({ match }) => {
   useEffect(() => {
     if (!loading && data) {
       if (data.getBoardById) {
+        setRedirect(false);
         onCompletedHandle(data);
       }
     } else {
-      <Redirect push to="/" />;
+      setRedirect(true);
     }
   }, [data]);
 
@@ -75,12 +77,6 @@ const Board = ({ match }) => {
             source: source.index,
             destination: destination.index,
           },
-          refetchQueries: [
-            {
-              query: COLUMNS_QUERY,
-              variables: { boardID: currentBoard.id },
-            },
-          ],
         });
       }
     }
@@ -102,12 +98,6 @@ const Board = ({ match }) => {
           sourcePosition: source.index,
           destinationPosition: destination.index,
         },
-        refetchQueries: [
-          {
-            query: COLUMNS_QUERY,
-            variables: { boardID: currentBoard.id },
-          },
-        ],
       });
     }
   }, [draggingResult]);
@@ -124,6 +114,10 @@ const Board = ({ match }) => {
   };
 
   if (loading) return <BigLoader />;
+
+  if (redirect && !data) {
+    return <Redirect push to="/" />;
+  }
 
   return (
     <Layout>

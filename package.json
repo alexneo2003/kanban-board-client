@@ -17,6 +17,7 @@
     "eslint": "^7.20.0",
     "flexboxgrid2": "latest",
     "graphql": "^15.5.0",
+    "path-to-regexp": "^6.2.0",
     "prettier": "^2.2.1",
     "react": "17.0.1",
     "react-beautiful-dnd": "latest",

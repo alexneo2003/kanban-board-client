@@ -6,15 +6,16 @@ import AddNewForm from '../AddNewForm';
 
 import './boards-list.scss';
 import Layout from '../Layout';
+import { setCurrentBoard } from '../../reducer/actions';
 
-const BoardsList = ({ boards }) => {
-  const { setCurrentBoard } = useContext(Context);
+const BoardsList = React.memo(function BoardsList({ boards }) {
+  const { dispatch } = useContext(Context);
 
   const BoardItem = ({ title, boardID }) => (
     <div style={{ position: 'relative' }}>
       <Link
         to={`/board/${boardID}`}
-        onClick={() => setCurrentBoard({ id: boardID, title })}>
+        onClick={() => dispatch(setCurrentBoard({ id: boardID, title }))}>
         <div className="boards-list__item">
           <span className="board__item__title">{title}</span>
         </div>
@@ -40,13 +41,13 @@ const BoardsList = ({ boards }) => {
               </div>
             ))}
             <div className=" col-xs-12 col-sm-4 col-md-4 col-lg-3 col-xl-3">
-              <AddNewForm isBoardForm />
+              <AddNewForm isBoardForm style={{ margin: 0 }} />
             </div>
           </div>
         </div>
       </div>
     </Layout>
   );
-};
+});
 
 export default BoardsList;

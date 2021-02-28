@@ -15,22 +15,18 @@ import Column from '../Column';
 import './board.scss';
 import Layout from '../Layout';
 import AddNewForm from '../AddNewForm';
+import { initialize, setColumns, setCurrentBoard } from '../../reducer/actions';
 
 const Board = ({ match }) => {
-  const {
-    setData,
-    setCurrentBoard,
-    currentBoard,
-    state,
-    dispatch,
-  } = useContext(Context);
+  const { state, dispatch } = useContext(Context);
+
   const [draggingResult, setDraggingResult] = useState({});
   const { data, loading } = useQuery(COLUMNS_QUERY, {
     variables: { boardID: match.params.id },
     fetchPolicy: 'network-only',
   });
 
-  const { columns: columnsState } = state || {};
+  const { columns: columnsState, currentBoard } = state || {};
 
   const [reorderColumn] = useMutation(REORDER_COLUMN_MUTATION);
   const [reorderCard] = useMutation(REORDER_CARD_MUTATION);
@@ -40,12 +36,9 @@ const Board = ({ match }) => {
       getColumns: { columns },
       getBoardById: { board },
     } = dataFn;
-    setData({ columns });
-    setCurrentBoard(board);
-    dispatch({
-      type: 'INITIALIZE',
-      data: { columns, board },
-    });
+    dispatch(setColumns(columns));
+    dispatch(setCurrentBoard(board));
+    // dispatch(initialize(columns, board));
   };
 
   useEffect(() => {

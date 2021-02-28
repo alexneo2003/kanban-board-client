@@ -5,9 +5,11 @@ import Context from '../../context';
 import Avatar from '../Avatar';
 
 import './header.scss';
+import { setCurrentBoard } from '../../reducer/actions';
 
 const Header = () => {
-  const { owner, currentBoard, setCurrentBoard } = useContext(Context);
+  const { dispatch, state } = useContext(Context) || {};
+  const { owner, currentBoard } = state || {};
 
   return (
     <header className="header">
@@ -15,7 +17,7 @@ const Header = () => {
         <Link
           to="/"
           className="header__wrapper"
-          onClick={() => setCurrentBoard('')}>
+          onClick={() => dispatch(setCurrentBoard(''))}>
           <Logo className="header__logo" />
           <span className="header__owner">{owner}</span>
         </Link>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { SIGNUP_MUTATION, LOGIN_MUTATION } from '../../helpers/mutations';
-import { ME_QUERY } from '../../helpers/queries';
+import { BOARDS_QUERY, ME_QUERY } from '../../helpers/queries';
 import MiniLoader from '../Loader/MiniLoader';
 
 import './login-screen.scss';
@@ -35,11 +35,11 @@ const LoginScreen = () => {
     isLoginFormShow
       ? login({
           variables: { email, password },
-          refetchQueries: [{ query: ME_QUERY }],
+          refetchQueries: [{ query: ME_QUERY }, { query: BOARDS_QUERY }],
         })
       : signup({
           variables: { name, email, password },
-          refetchQueries: [{ query: ME_QUERY }],
+          refetchQueries: [{ query: ME_QUERY }, { query: BOARDS_QUERY }],
         });
   };
 

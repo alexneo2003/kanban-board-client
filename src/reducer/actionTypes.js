@@ -1,0 +1,14 @@
+export const INITIALIZE = 'INITIALIZE';
+export const SET_OWNER = 'SET_OWNER';
+export const SET_BOARDS = 'SET_BOARDS';
+export const SET_COLUMNS = 'SET_COLUMNS';
+export const REORDER_COLUMN = 'REORDER_COLUMN';
+export const REORDER_CARD = 'REORDER_CARD';
+export const TYPE_INPUT = 'TYPE_INPUT';
+export const SET_CURRENT_BOARD = 'SET_CURRENT_BOARD';
+export const ADD_NEW_CARD = 'ADD_NEW_CARD';
+export const ADD_NEW_COLUMN = 'ADD_NEW_COLUMN';
+export const ADD_NEW_BOARD = 'ADD_NEW_BOARD';
+export const REMOVE_CARD = 'REMOVE_CARD';
+export const REMOVE_COLUNM = 'REMOVE_COLUNM';
+export const REMOVE_BOARD = 'REMOVE_BOARD';

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import BigLoader from '../Loader/BigLoader';
 import { BOARDS_QUERY, ME_QUERY } from '../../helpers/queries';
@@ -7,27 +7,30 @@ import BoardsList from '../Board/BoardsList';
 import './main-screen.scss';
 import context from '../../context';
 import LoginScreen from '../LoginScreen';
-import Layout from '../Layout';
+import { setBoards, setOwner } from '../../reducer/actions';
 
-const MainScreen = () => {
-  const { owner, setOwner } = useContext(context);
-  const [boards, setBoards] = useState(undefined);
+const MainScreen = React.memo(function MainScreen() {
+  const { dispatch, state } = useContext(context);
   const { data: userData, loadingMe } = useQuery(ME_QUERY);
   const { data: boardsData, loading, error } = useQuery(BOARDS_QUERY);
+
+  const { owner, boards } = state || {};
 
   useEffect(() => {
     if (userData) {
       if (userData.me.success) {
-        setOwner(userData.me.user.name);
+        dispatch(setOwner(userData.me.user.name));
       } else {
-        setOwner(undefined);
+        dispatch(setOwner(undefined));
       }
     }
   }, [userData]);
 
   useEffect(() => {
     if (!loading && boardsData) {
-      setBoards(boardsData.getBoards.boards);
+      if (boardsData.getBoards.success) {
+        dispatch(setBoards(boardsData.getBoards.boards));
+      }
     }
   }, [boardsData]);
 
@@ -39,12 +42,10 @@ const MainScreen = () => {
   }
 
   return (
-    <Layout>
-      <main className="main-screen">
-        {boards && <BoardsList boards={boards} />}
-      </main>
-    </Layout>
+    <main className="main-screen">
+      {boards && <BoardsList boards={boards} />}
+    </main>
   );
-};
+});
 
 export default MainScreen;

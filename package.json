@@ -24,6 +24,7 @@
     "react-router-dom": "latest",
     "react-scripts": "^4.0.2",
     "sass": "^1.32.7",
+    "uuid": "^8.3.2",
     "vercel": "^21.2.3"
   },
   "devDependencies": {

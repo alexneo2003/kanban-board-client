@@ -1,6 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import Context from '../../context';
 import {
   ADD_COLUMN_MUTATION,
   ADD_CARD_MUTATION,
@@ -9,16 +8,13 @@ import {
 import MiniLoader from '../Loader/MiniLoader';
 
 import './add-new-form.scss';
+import context from '../../context';
+import { BOARDS_QUERY, COLUMNS_QUERY } from '../../helpers/queries';
+import { addNewBoard, addNewCard, addNewColumn } from '../../reducer/actions';
 
-export default ({ columnID, isEmptyColumn, isBoardForm }) => {
+const AddNewForm = ({ columnID, isEmptyColumn, isBoardForm }) => {
+  const { dispatch, state } = useContext(context);
   const [isShowTextarea, onShowTextarea] = useState(false);
-  const {
-    addNewCard,
-    addNewColumn,
-    addNewBoard,
-    newCardText,
-    setNewCardText,
-  } = useContext(Context);
   const inputRef = useRef(null);
 
   const [addBoard, { loading: loadingAddBoard }] = useMutation(
@@ -39,6 +35,8 @@ export default ({ columnID, isEmptyColumn, isBoardForm }) => {
       onCompleted: () => onShowTextarea(false),
     }
   );
+
+  const { currentBoard } = state || {};
 
   useEffect(() => {
     if (inputRef.current) {
@@ -64,17 +62,70 @@ export default ({ columnID, isEmptyColumn, isBoardForm }) => {
     );
   };
 
-  const onSubmitHandler = (e) => {
-    if (isBoardForm) {
-      addNewBoard(e, addBoard, isBoardForm);
+  const addNewCardHandler = async (inputValue) => {
+    addCard({
+      variables: {
+        boardID: currentBoard.id,
+        columnID,
+        cardInput: { title: inputValue },
+      },
+      refetchQueries: [
+        {
+          query: isBoardForm ? BOARDS_QUERY : COLUMNS_QUERY,
+          variables: { boardID: currentBoard.id },
+        },
+      ],
+    });
+    dispatch(addNewCard(columnID, inputValue));
+  };
+
+  const addNewColumnHandler = (inputValue) => {
+    addColumn({
+      variables: { boardID: currentBoard.id, title: inputValue },
+      refetchQueries: [
+        {
+          query: isBoardForm ? BOARDS_QUERY : COLUMNS_QUERY,
+          variables: { boardID: currentBoard.id },
+        },
+      ],
+    });
+    dispatch(addNewColumn(inputValue));
+  };
+
+  const addNewBoardHandler = (inputValue) => {
+    addBoard({
+      variables: { title: inputValue },
+      refetchQueries: [
+        {
+          query: isBoardForm ? BOARDS_QUERY : COLUMNS_QUERY,
+          variables: { boardID: currentBoard.id },
+        },
+      ],
+    });
+    dispatch(addNewBoard(inputValue));
+  };
+
+  const onSubmitHandler = (e, inputValue) => {
+    e.preventDefault();
+
+    const value = inputValue.trim();
+
+    if (value.length < 3 || value === '') {
+      alert('The input value requires length more than 2 symbols');
+    } else if (isBoardForm) {
+      addNewBoardHandler(inputValue);
     } else if (isEmptyColumn) {
-      addNewColumn(e, addColumn, isBoardForm);
+      addNewColumnHandler(inputValue);
     } else {
-      addNewCard(e, columnID, addCard, isBoardForm);
+      addNewCardHandler(inputValue);
     }
   };
 
-  const AddNewTextArea = () => {
+  const AddNewTextArea = ({ onFormSubmit }) => {
+    const [inputVal, setValue] = useState('');
+    const onChangeHandler = (event) => {
+      setValue(event.target.value);
+    };
     if (loadingAddBoard || loadingAddColumn || loadingAddCard) {
       return (
         <div style={{ margin: 9 }}>
@@ -82,13 +133,20 @@ export default ({ columnID, isEmptyColumn, isBoardForm }) => {
         </div>
       );
     }
+
     return (
-      <form className="add-new-card__textarea" onSubmit={onSubmitHandler}>
+      <form
+        className={
+          isBoardForm
+            ? 'add-new-card__textarea add-new-card__textarea__board'
+            : 'add-new-card__textarea'
+        }
+        onSubmit={(e) => onFormSubmit(e, inputVal)}>
         <textarea
           ref={inputRef}
           placeholder="Ввести заголовок для этой карточки"
-          onChange={(e) => setNewCardText(e.target.value)}
-          value={newCardText}
+          onChange={onChangeHandler}
+          value={inputVal}
           required
         />
         <div className="add-new-card__textarea-submit">
@@ -109,5 +167,11 @@ export default ({ columnID, isEmptyColumn, isBoardForm }) => {
     );
   };
 
-  return isShowTextarea ? <AddNewTextArea /> : <AddNewButton />;
+  return isShowTextarea ? (
+    <AddNewTextArea onFormSubmit={onSubmitHandler} />
+  ) : (
+    <AddNewButton />
+  );
 };
+
+export default AddNewForm;

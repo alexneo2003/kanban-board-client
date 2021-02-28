@@ -6,13 +6,19 @@ import {
   REMOVE_CARD_MUTATION,
   REMOVE_COLUMN_MUTATION,
 } from '../../helpers/mutations';
-import { BOARDS_QUERY } from '../../helpers/queries';
+import { BOARDS_QUERY, COLUMNS_QUERY } from '../../helpers/queries';
+import {
+  onRemoveCard,
+  onRemoveColumn,
+  onRemoveBoard,
+} from '../../reducer/actions';
 import MiniLoader from '../Loader/MiniLoader';
 
 import './remove-button.scss';
 
 const RemoveButton = ({ buttonType, boardID, columnID, cardID }) => {
-  const { onRemoveCard, onRemoveColumn } = useContext(context);
+  const { dispatch, state } = useContext(context);
+  const { currentBoard } = state || {};
 
   const [removeBoard, { loading: loadingRemoveBoard }] = useMutation(
     REMOVE_BOARD_MUTATION
@@ -24,21 +30,50 @@ const RemoveButton = ({ buttonType, boardID, columnID, cardID }) => {
     REMOVE_CARD_MUTATION
   );
 
+  const onRemoveCardHandler = () => {
+    if (global.confirm('Are you sure you want to remove the card?')) {
+      dispatch(onRemoveCard(columnID, cardID));
+      removeCard({
+        variables: { columnId: columnID, cardId: cardID },
+        refetchQueries: [
+          { query: COLUMNS_QUERY, variables: { boardID: currentBoard.id } },
+        ],
+      });
+    }
+  };
+
+  const onRemoveColumnHandler = () => {
+    if (global.confirm('Are you sure you want to remove the column?')) {
+      dispatch(onRemoveColumn(columnID, cardID));
+      removeColumn({
+        variables: { boardID: currentBoard.id, columnID },
+        refetchQueries: [
+          { query: COLUMNS_QUERY, variables: { boardID: currentBoard.id } },
+        ],
+      });
+    }
+  };
+
+  const onRemoveBoardHandler = () => {
+    if (global.confirm('Are you sure you want to remove the board?')) {
+      dispatch(onRemoveBoard(columnID, cardID));
+      removeBoard({
+        variables: { boardID },
+        refetchQueries: [{ query: BOARDS_QUERY }],
+      });
+    }
+  };
+
   const onClickHandler = (type) => {
     switch (type) {
       case 'card':
-        onRemoveCard(columnID, cardID, removeCard);
+        onRemoveCardHandler();
         break;
       case 'column':
-        onRemoveColumn(columnID, removeColumn);
+        onRemoveColumnHandler();
         break;
       case 'board':
-        if (global.confirm('Are you sure you want to remove the board?')) {
-          removeBoard({
-            variables: { boardID },
-            refetchQueries: [{ query: BOARDS_QUERY }],
-          });
-        }
+        onRemoveBoardHandler();
         break;
 
       default:

@@ -21,5 +21,7 @@ Server side project you can check at [this repository](https://github.com/alexne
 2. Multiple boards (create/delete)
 3. Multiple columns at every boards (create/delete/reorder)
 4. Multiple cards at every columns (create/delete/reorder)
+5. Edit board/column/card title
+6. Set board background using images from Unsplash API
 
 ![application example](demo.gif)

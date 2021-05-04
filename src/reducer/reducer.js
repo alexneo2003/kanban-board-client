@@ -1,21 +1,25 @@
-/* eslint-disable no-case-declarations */
-import { v4 as uuid } from 'uuid';
 import {
-  INITIALIZE,
-  SET_OWNER,
-  SET_BOARDS,
-  REORDER_COLUMN,
-  REORDER_CARD,
-  TYPE_INPUT,
-  SET_CURRENT_BOARD,
+  ADD_NEW_BOARD,
   ADD_NEW_CARD,
   ADD_NEW_COLUMN,
-  ADD_NEW_BOARD,
+  CHANGE_BOARD_IMAGE,
+  EDIT_TITLE,
+  INITIALIZE,
+  REMOVE_BOARD,
   REMOVE_CARD,
   REMOVE_COLUNM,
-  REMOVE_BOARD,
+  REORDER_CARD,
+  REORDER_COLUMN,
+  SET_BOARDS,
   SET_COLUMNS,
+  SET_CURRENT_BOARD,
+  SET_EDIT_TITLE,
+  SET_OWNER,
 } from './actionTypes';
+
+import { v4 as uuid } from 'uuid';
+
+/* eslint-disable no-case-declarations */
 
 export const defaultState = {
   owner: '',
@@ -37,6 +41,10 @@ export default (state = defaultState, action) => {
     destinationColumnID,
     sourcePosition,
     destinationPosition,
+    title,
+    sourceID,
+    sourceType,
+    image,
   } = action.payload || {};
 
   switch (action.type) {
@@ -156,6 +164,62 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         boards: state.boards.filter((board) => board.id !== boardID),
+      };
+
+    case EDIT_TITLE:
+      return {
+        ...state,
+        editableTitle: { sourceID, sourceType },
+      };
+
+    case SET_EDIT_TITLE:
+      if (sourceType === 'BOARD') {
+        return {
+          ...state,
+          boards: state.boards.map((board) => {
+            if (board.id === sourceID) {
+              const newColumn = {
+                ...board,
+                title,
+              };
+              return newColumn;
+            }
+            return board;
+          }),
+        };
+      }
+      return {
+        ...state,
+        editableTitle: {},
+        columns: state.columns.map((column) => {
+          if (sourceType === 'COLUMN' && column.id === sourceID) {
+            const newColumn = {
+              ...column,
+              title,
+            };
+            return newColumn;
+          }
+
+          return {
+            ...column,
+            cards: column.cards.map((card) => {
+              if (sourceType === 'CARD' && card.id === sourceID) {
+                const newCard = {
+                  ...column,
+                  title,
+                };
+                return newCard;
+              }
+              return card;
+            }),
+          };
+        }),
+      };
+
+    case CHANGE_BOARD_IMAGE:
+      return {
+        ...state,
+        currentBoard: { ...state.currentBoard, image },
       };
 
     default:

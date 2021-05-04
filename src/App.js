@@ -1,30 +1,30 @@
-import React, { useEffect, useReducer } from 'react';
+import './styles.scss';
+import 'flexboxgrid2/flexboxgrid2.css';
+
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import React, { useEffect, useReducer } from 'react';
 import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
   Redirect,
+  Route,
+  BrowserRouter as Router,
+  Switch,
 } from 'react-router-dom';
+import reducer, { defaultState } from './reducer/reducer';
+
 import Board from './components/Board';
 import Context from './context';
 import MainScreen from './components/MainScreen';
-import reducer, { defaultState } from './reducer/reducer';
-
-import './styles.scss';
-import 'flexboxgrid2/flexboxgrid2.css';
 import logger from './reducer/logger';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const client = new ApolloClient({
-  uri:
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:4000/graphql'
-      : 'https://kanban-server.vercel.app/graphql',
+  uri: !isProduction
+    ? 'http://localhost:4000/graphql'
+    : 'https://kanban-server.vercel.app/graphql',
   credentials: 'include',
   cache: new InMemoryCache(),
 });
-
-const isProduction = process.env.NODE_ENV;
 
 const App = () => {
   const [state, dispatch] = useReducer(

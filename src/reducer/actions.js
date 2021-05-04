@@ -1,18 +1,21 @@
 import {
-  INITIALIZE,
-  SET_OWNER,
-  SET_BOARDS,
-  SET_COLUMNS,
-  REORDER_COLUMN,
-  REORDER_CARD,
-  TYPE_INPUT,
-  SET_CURRENT_BOARD,
+  ADD_NEW_BOARD,
   ADD_NEW_CARD,
   ADD_NEW_COLUMN,
-  ADD_NEW_BOARD,
+  CHANGE_BOARD_IMAGE,
+  EDIT_TITLE,
+  INITIALIZE,
+  REMOVE_BOARD,
   REMOVE_CARD,
   REMOVE_COLUNM,
-  REMOVE_BOARD,
+  REORDER_CARD,
+  REORDER_COLUMN,
+  SET_BOARDS,
+  SET_COLUMNS,
+  SET_CURRENT_BOARD,
+  SET_EDIT_TITLE,
+  SET_OWNER,
+  TYPE_INPUT,
 } from './actionTypes';
 
 export const initialize = (columns, board) => ({
@@ -83,4 +86,19 @@ export const onRemoveColumn = (columnID) => ({
 export const onRemoveBoard = (boardID) => ({
   type: REMOVE_BOARD,
   payload: { boardID },
+});
+
+export const onEditTitle = (sourceID, sourceType) => ({
+  type: EDIT_TITLE,
+  payload: { sourceID, sourceType },
+});
+
+export const setNewEditTitle = (title, sourceID, sourceType) => ({
+  type: SET_EDIT_TITLE,
+  payload: { title, sourceID, sourceType },
+});
+
+export const changeBoardImageBG = (image) => ({
+  type: CHANGE_BOARD_IMAGE,
+  payload: { image },
 });

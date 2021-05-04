@@ -1,33 +1,12 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import Context from '../../context';
-import RemoveButton from '../RemoveButton';
-import AddNewForm from '../AddNewForm';
-
+/* eslint-disable react/jsx-props-no-spreading */
 import './boards-list.scss';
+
+import AddNewForm from '../AddNewForm';
+import BoardItem from './BoardItem';
 import Layout from '../Layout';
-import { setCurrentBoard } from '../../reducer/actions';
+import React from 'react';
 
 const BoardsList = React.memo(function BoardsList({ boards }) {
-  const { dispatch } = useContext(Context);
-
-  const BoardItem = ({ title, boardID }) => (
-    <div style={{ position: 'relative' }}>
-      <Link
-        to={`/board/${boardID}`}
-        onClick={() => dispatch(setCurrentBoard({ id: boardID, title }))}>
-        <div className="boards-list__item">
-          <span className="board__item__title">{title}</span>
-        </div>
-      </Link>
-      <RemoveButton
-        buttonType="board"
-        style={{ right: 12 }}
-        boardID={boardID}
-      />
-    </div>
-  );
-
   return (
     <Layout>
       <div className="boards-list">

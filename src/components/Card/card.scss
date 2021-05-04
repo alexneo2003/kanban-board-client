@@ -1,4 +1,5 @@
 .card {
+  min-height: 37px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -14,7 +15,7 @@
     background-color: lightseagreen;
   }
   &:hover {
-    background-color:#f6f6f6;
+    background-color: #f6f6f6;
   }
   &__text {
     font-style: normal;
@@ -23,4 +24,3 @@
     line-height: 19px;
   }
 }
- 

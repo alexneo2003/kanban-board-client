@@ -20,6 +20,7 @@ export const COLUMNS_QUERY = gql`
       board {
         id
         title
+        image
       }
     }
   }

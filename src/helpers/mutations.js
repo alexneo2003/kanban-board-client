@@ -131,3 +131,21 @@ export const REORDER_CARD_MUTATION = gql`
     }
   }
 `;
+
+export const EDIT_TITLE_MUTATION = gql`
+  mutation EditTitle($title: String!, $sourceID: ID!, $sourceType: String!) {
+    editTitle(title: $title, sourceID: $sourceID, sourceType: $sourceType) {
+      success
+      message
+    }
+  }
+`;
+
+export const CHANGE_BOARD_IMAGE_MUTATION = gql`
+  mutation ChangeBoardImage($boardID: ID!, $image: String!) {
+    changeBoardImage(boardID: $boardID, image: $image) {
+      success
+      message
+    }
+  }
+`;

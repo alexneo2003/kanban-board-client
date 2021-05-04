@@ -1,13 +1,14 @@
-import React, { useContext, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import BigLoader from '../Loader/BigLoader';
-import { BOARDS_QUERY, ME_QUERY } from '../../helpers/queries';
-import BoardsList from '../Board/BoardsList';
-
 import './main-screen.scss';
-import context from '../../context';
-import LoginScreen from '../LoginScreen';
+
+import { BOARDS_QUERY, ME_QUERY } from '../../helpers/queries';
+import React, { useContext, useEffect } from 'react';
 import { setBoards, setOwner } from '../../reducer/actions';
+
+import BigLoader from '../Loader/BigLoader';
+import BoardsList from '../Board/BoardsList';
+import LoginScreen from '../LoginScreen';
+import context from '../../context';
+import { useQuery } from '@apollo/client';
 
 const MainScreen = React.memo(function MainScreen() {
   const { dispatch, state } = useContext(context);

@@ -1,16 +1,17 @@
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import './add-new-form.scss';
+
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import {
-  ADD_COLUMN_MUTATION,
-  ADD_CARD_MUTATION,
   ADD_BOARD_MUTATION,
+  ADD_CARD_MUTATION,
+  ADD_COLUMN_MUTATION,
 } from '../../helpers/mutations';
-import MiniLoader from '../Loader/MiniLoader';
-
-import './add-new-form.scss';
-import context from '../../context';
 import { BOARDS_QUERY, COLUMNS_QUERY } from '../../helpers/queries';
 import { addNewBoard, addNewCard, addNewColumn } from '../../reducer/actions';
+
+import MiniLoader from '../Loader/MiniLoader';
+import context from '../../context';
 
 const AddNewForm = ({ columnID, isEmptyColumn, isBoardForm }) => {
   const { dispatch, state } = useContext(context);
@@ -53,10 +54,10 @@ const AddNewForm = ({ columnID, isEmptyColumn, isBoardForm }) => {
         <i className="fa fa-plus" aria-hidden="true" />
         <div className="add-new-card__button_text">
           {isBoardForm
-            ? 'Создать новую доску'
+            ? 'Add new board'
             : isEmptyColumn
-            ? 'Добавить еще одну колонку'
-            : 'Добавить еще одну карточку'}
+            ? 'Add new column'
+            : 'Add new card'}
         </div>
       </button>
     );
@@ -144,7 +145,7 @@ const AddNewForm = ({ columnID, isEmptyColumn, isBoardForm }) => {
         onSubmit={(e) => onFormSubmit(e, inputVal)}>
         <textarea
           ref={inputRef}
-          placeholder="Ввести заголовок для этой карточки"
+          placeholder="Enter title"
           onChange={onChangeHandler}
           value={inputVal}
           required
@@ -152,10 +153,10 @@ const AddNewForm = ({ columnID, isEmptyColumn, isBoardForm }) => {
         <div className="add-new-card__textarea-submit">
           <button type="submit">
             {isBoardForm
-              ? 'Добавить доску'
+              ? 'Add new board'
               : isEmptyColumn
-              ? 'Добавить колонку'
-              : 'Добавить карточку'}
+              ? 'Add new column'
+              : 'Add new card'}
           </button>
           <i
             className="fa fa-times"

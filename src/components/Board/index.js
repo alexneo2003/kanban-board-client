@@ -1,23 +1,25 @@
-/* eslint-disable react/jsx-props-no-spreading */
-import React, { useContext, useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { Redirect } from 'react-router-dom';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import BigLoader from '../Loader/BigLoader';
-import Context from '../../context';
-import { COLUMNS_QUERY } from '../../helpers/queries';
-import {
-  REORDER_COLUMN_MUTATION,
-  REORDER_CARD_MUTATION,
-} from '../../helpers/mutations';
-import Column from '../Column';
-
 import './board.scss';
-import Layout from '../Layout';
-import AddNewForm from '../AddNewForm';
-import { initialize, setColumns, setCurrentBoard } from '../../reducer/actions';
 
-const Board = ({ match }) => {
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import {
+  REORDER_CARD_MUTATION,
+  REORDER_COLUMN_MUTATION,
+} from '../../helpers/mutations';
+import React, { useContext, useEffect, useState } from 'react';
+import { Redirect, withRouter } from 'react-router-dom';
+import { initialize, setColumns, setCurrentBoard } from '../../reducer/actions';
+/* eslint-disable react/jsx-props-no-spreading */
+import { useMutation, useQuery } from '@apollo/client';
+
+import AddNewForm from '../AddNewForm';
+import BigLoader from '../Loader/BigLoader';
+import { COLUMNS_QUERY } from '../../helpers/queries';
+import Column from '../Column';
+import Context from '../../context';
+import Layout from '../Layout';
+import UnsplashGallery from '../UnsplashGallery';
+
+const Board = withRouter(({ match, history }) => {
   const { state, dispatch } = useContext(Context);
 
   const [draggingResult, setDraggingResult] = useState({});
@@ -102,6 +104,20 @@ const Board = ({ match }) => {
     }
   }, [draggingResult]);
 
+  const onBackButtonEvent = (e) => {
+    e.preventDefault();
+    history.push('/');
+    dispatch(setCurrentBoard(''));
+  };
+
+  useEffect(() => {
+    window.history.pushState(null, null, window.location.pathname);
+    window.addEventListener('popstate', onBackButtonEvent);
+    return () => {
+      window.removeEventListener('popstate', onBackButtonEvent);
+    };
+  }, []);
+
   const onDragEnd = (result) => {
     const { type, draggableId, source, destination } = result;
     setDraggingResult({
@@ -121,7 +137,9 @@ const Board = ({ match }) => {
 
   return (
     <Layout>
-      <div className="board">
+      <div
+        className="board"
+        style={{ backgroundImage: `url(${currentBoard.image})` }}>
         <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
           <Droppable
             droppableId="all-columns"
@@ -146,8 +164,10 @@ const Board = ({ match }) => {
           </Droppable>
         </DragDropContext>
       </div>
+
+      <UnsplashGallery />
     </Layout>
   );
-};
+});
 
 export default Board;

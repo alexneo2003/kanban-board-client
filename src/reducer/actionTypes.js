@@ -12,3 +12,6 @@ export const ADD_NEW_BOARD = 'ADD_NEW_BOARD';
 export const REMOVE_CARD = 'REMOVE_CARD';
 export const REMOVE_COLUNM = 'REMOVE_COLUNM';
 export const REMOVE_BOARD = 'REMOVE_BOARD';
+export const EDIT_TITLE = 'EDIT_TITLE';
+export const SET_EDIT_TITLE = 'SET_EDIT_TITLE';
+export const CHANGE_BOARD_IMAGE = 'CHANGE_BOARD_IMAGE';

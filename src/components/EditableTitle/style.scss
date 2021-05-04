@@ -1,0 +1,23 @@
+.edit-title-input {
+  border-radius: 3px;
+  border: none;
+  padding: 10px 2px 6px 7px;
+  margin: 4px;
+  position: absolute;
+  width: 204px;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  resize: none;
+  background: rgba(224, 224, 224, 1);
+  box-shadow: inset 0px 1px 4px rgba(9, 45, 66, 0.25);
+  &__text {
+    font-family: Montserrat, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 19px;
+  }
+}

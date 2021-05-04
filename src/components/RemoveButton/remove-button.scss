@@ -1,15 +1,17 @@
 .remove__button {
   padding: 1px 6px;
   border-radius: 3px;
-  color: #6B808C;
+  color: #6b808c;
   cursor: pointer;
   position: absolute;
   top: 8px;
-  right: 12px;
+  right: 6px;
   border: none;
   background: none;
-  &:hover{
+  transition: color 200ms;
+  &:hover {
     background-color: #979797;
+    color: #ffffff;
   }
   &__loader {
     position: absolute;
